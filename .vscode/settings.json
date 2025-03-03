@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "alfonso morales_q2_v1": "cpp"
+        "alfonso morales_q2_v1": "cpp",
+        "string": "cpp",
+        "xstring": "cpp"
     }
 }
