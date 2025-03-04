@@ -1,0 +1,26 @@
+
+**Cosine similarity notes
+
+--magnitude
+||A|| = sqrt(SIGMA count1^2)
+||B|| = sqrt(SIGMA count2^2)
+
+--count1
+count1 = number of times a word appears in file1
+count2 = number of times a word appears in file2
+
+EX:
+file1 contains [a,b,c,c,c,d]
+file2 contains [a,b,b,b,c,d,d]
+
+WORD      count1       count2         count1^2           count2^2
+a           1             1               1                   1  
+b           1             3               1                   9  
+c           3             1               9                   1  
+d           1             2               1                   4 
+
+
+
+
+
+

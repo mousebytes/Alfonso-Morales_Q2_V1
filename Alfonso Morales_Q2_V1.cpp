@@ -1,9 +1,8 @@
-#include<iostream>
-#include<fstream>
-#include<unordered_map>
-#include<cmath>
-#include<vector>
-#include<string>
+#include<iostream> // i love io stream
+#include<fstream> // for opening files
+#include<unordered_map> // for holding keys
+#include<cmath> // for sqrt
+#include<string> // woooorrrddddssss
 #include<set> // for deleting dupe words
 #include<cctype> // for isalnum
 // not using namespace std just for practice
@@ -27,9 +26,11 @@ void jaccard_similarity();
 
 int main(void)
 {
-    std::string word = "hello, my fRiend 123";
-    std::cout << normalize_words(word) << "\n";
-    
+    cosine_similarity("text1.txt", "text2.txt"); 
+
+
+
+
 
 
 
@@ -70,10 +71,32 @@ void cosine_similarity(std::string file1, std::string file2)
         int count1 = word_freq1[word]; // 0 if word doesnt exist in file1
         int count2 = word_freq2[word];  // 0 if word doesnt exist in file2
 
-        // calculate the dot procuct using (write this later)
+        // calculate the dot procuct
         dot_prod += count1*count2;
-
+        mag1+= count1*count1; // mag of file 1
+        mag2+= count2*count2; // mag of file 2
     }
+    double similarity;
+    if(mag1==0 || mag2 ==0)
+        similarity=0; // if either file is empty then similarity is 0
+    similarity = dot_prod/(std::sqrt(mag1)*std::sqrt(mag2)); // A DOT B DIVIDED BY (SQRT MAGNITUDE 1 TIMES SQRT MAGNITUDE 2)
+
+    std::cout <<" Cosine Similarity: " << similarity << "\n";
+
+    //TODO: check for words unique to file 1 and file 2
+
+    std::cout << "Words unique to file 1: \n";
+    for(auto p : word_freq1) // for every pair in word_freq1
+    {
+        // if the word is not in file 2
+        if(word_freq2.count(p.first)==0) // if the word is not in file 2
+        {
+            std::cout << "\t" << p.first << "\n"; // print the word (never use endl, it's slowwwwwww)
+        }
+        
+    }
+
+
 
 }
 
