@@ -86,6 +86,11 @@ void cosine_similarity(std::string file1, std::string file2)
     //TODO: check for words unique to file 1 and file 2
 
     std::cout << "Words unique to file 1: \n";
+
+    std::cout << "Size of word_freq1: " << word_freq1.size() << "\n";
+    std::cout << "Size of word_freq2: " << word_freq2.size() << "\n";
+    //TODO find out why the p.first is outputting nothing
+    
     for(auto p : word_freq1) // for every pair in word_freq1
     {
         // if the word is not in file 2
