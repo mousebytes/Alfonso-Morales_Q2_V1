@@ -1,3 +1,6 @@
+// THIS FILE COMPARES 2 .txt FILES FOR THEIR SIMILARITIES USING SEVERAL COMPARISON ALGORITHMS
+
+
 #include<iostream> // i love io stream
 #include<fstream> // for opening files
 #include<unordered_map> // for holding keys
@@ -6,6 +9,8 @@
 #include<set> // for deleting dupe words
 #include<cctype> // for isalnum
 // not using namespace std just for practice
+
+
 
 
 // cosine similarity prototypes
@@ -55,6 +60,8 @@ void cosine_similarity(std::string file1, std::string file2)
     // use a set to delete dupe words and get the unique words
     std::set<std::string> unique_words;
 
+
+    // why was i looking for unique words again -- for the for loop below :)
     for(auto p : word_freq1) // for every pair in word_freq1
     {
         unique_words.insert(p.first); // insert the key into the set
@@ -77,31 +84,51 @@ void cosine_similarity(std::string file1, std::string file2)
         mag2+= count2*count2; // mag of file 2
     }
     double similarity;
-    if(mag1==0 || mag2 ==0)
-        similarity=0; // if either file is empty then similarity is 0
-    similarity = dot_prod/(std::sqrt(mag1)*std::sqrt(mag2)); // A DOT B DIVIDED BY (SQRT MAGNITUDE 1 TIMES SQRT MAGNITUDE 2)
-
-    std::cout <<" Cosine Similarity: " << similarity << "\n";
-
-    //TODO: check for words unique to file 1 and file 2
-
-    std::cout << "Words unique to file 1: \n";
-
-    std::cout << "Size of word_freq1: " << word_freq1.size() << "\n";
-    std::cout << "Size of word_freq2: " << word_freq2.size() << "\n";
-    //TODO find out why the p.first is outputting nothing
-    
-    for(auto p : word_freq1) // for every pair in word_freq1
+    if(mag1!=0.0 && mag2 !=0.0)
     {
+        similarity = dot_prod/(std::sqrt(mag1)*std::sqrt(mag2)); // A DOT B DIVIDED BY (SQRT MAGNITUDE 1 TIMES SQRT MAGNITUDE 2)
+    }
+    else
+        similarity = 0;
+        
+    std::cout <<"Cosine Similarity: " << similarity << " or " << similarity * 100 <<"%"<<"\n";
+
+    //TODO: check for words unique to file 1 and file 2 -- DID THAT ABOVE ^^^ WITH UNIQUE WORDS
+
+    //TODO find out why the p.first is outputting nothing -- FIXED
+    
+   /* for(auto p : word_freq1) // for every pair in word_freq1 LEGACY CODE (DIDN'T WORK WITH THIS APPROACH)
+    {
+        std::cout<< p.second<< "\n";
         // if the word is not in file 2
         if(word_freq2.count(p.first)==0) // if the word is not in file 2
         {
-            std::cout << "\t" << p.first << "\n"; // print the word (never use endl, it's slowwwwwww)
+            //std::cout << "\t" << p.first << "\n"; // print the word (never use endl, it's slowwwwwww)
         }
         
     }
+    */
 
+    std::cout<< "Differences between the two files: \n";
 
+    std::cout << "\nWords that don't exist in file1, but do in file2: \t";
+    for(std::string s : unique_words) // FOR EVERY STRING IN UNIQUE WORDS
+    {
+        if(word_freq1[s]==0) // IF THE KEY DOESN'T EXIST IN WORD FRQ 1, PRINT
+        {
+            std::cout << s << ", ";
+        }
+    }
+
+    std::cout << "\nWords that don't exist in file2, but do in file1: \t";
+    for(std::string s : unique_words)
+    {
+        
+    if(word_freq2[s]==0) // IF THE KEY DOESN'T EXIST IN WORD FREQ 2, PRINT
+        {
+            std::cout << s << ", ";
+        }
+    }
 
 }
 
