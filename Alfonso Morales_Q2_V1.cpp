@@ -15,15 +15,16 @@
 
 // cosine similarity prototypes
 void cosine_similarity(std::string file1, std::string file2); // A dot B = ||A|| * ||B|| * cos(theta)
-std::string normalize_words(std::string word);
-std::unordered_map<std::string, int> word_counter(std::string file_name);
 
 // levenshtein distance prototypes
 void levenshtein_distance();
 
 // jaccard similarity prototypes
-void jaccard_similarity();
+void jaccard_similarity(std::string file1, std::string file2);
 
+// general use prototypes
+std::string normalize_words(std::string word);
+std::unordered_map<std::string, int> word_counter(std::string file_name);
 
 
 
@@ -33,7 +34,7 @@ int main(void)
 {
     cosine_similarity("text1.txt", "text2.txt"); 
 
-
+    jaccard_similarity("text1.txt", "text2.txt");
 
 
 
@@ -133,6 +134,27 @@ void cosine_similarity(std::string file1, std::string file2)
 }
 
 
+
+
+
+// jaccard similarity implementations
+void jaccard_similarity(std::string file1, std::string file2) // JACCARD SIMILARITY = INTERSECTION OF A AND B DIVIDED BY UNION OF A AND B
+{
+    /*
+    LOGIC: USE A MAP TO STORE WORDS AND THEIR FREQUENCY IN FILE 1 AND 2
+    USE A SET TO STORE UNION
+    USE A SET TO STORE INTERSECTION
+    */
+    
+}
+
+// levenshtein distance implementations
+void levenshtein_distance()
+{
+
+}
+
+// General Use Functions
 std::string normalize_words(std::string word) // normalize a word for the unordered_map key
 {
     std::string normalized;
@@ -168,18 +190,3 @@ std::unordered_map<std::string, int> word_counter(std::string file_name)
     return word_freq; // return the map
 
 }
-
-
-
-// jaccard similarity implementations
-void jaccard_similarity()
-{
-
-}
-
-// levenshtein distance implementations
-void levenshtein_distance()
-{
-
-}
-

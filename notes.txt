@@ -23,4 +23,31 @@ d           1             2               1                   4
 
 
 
+** Levenshtein distance notes
+Levenshtein Score = number of operations to change one string to another
+
+Calculate the similarity score: (1-(LevenshteinScore/MaxLength))*100
+
+
+
+
+
+
+
+
+
+** Jaccard Index notes
+
+Union = Present in either set, combined, without repetition
+Intersection = Present in both sets
+
+Similarity Score = (Intersection of two sets)/(Union of two sets)
+
+
+
+
+
+
+
+
 
