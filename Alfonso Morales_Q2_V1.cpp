@@ -17,7 +17,7 @@
 void cosine_similarity(std::string file1, std::string file2); // A dot B = ||A|| * ||B|| * cos(theta)
 
 // levenshtein distance prototypes
-void levenshtein_distance();
+void levenshtein_distance(std::string file1, std::string file2); 
 
 // jaccard similarity prototypes
 void jaccard_similarity(std::string file1, std::string file2);
@@ -32,8 +32,10 @@ std::unordered_map<std::string, int> word_counter(std::string file_name);
 
 int main(void)
 {
+    std::cout << "***** COSINE SIMILARITY *****\n";
     cosine_similarity("text1.txt", "text2.txt"); 
 
+    std::cout << "\n\n***** JACCARD SIMILARITY *****\n";
     jaccard_similarity("text1.txt", "text2.txt");
 
 
@@ -145,11 +147,32 @@ void jaccard_similarity(std::string file1, std::string file2) // JACCARD SIMILAR
     USE A SET TO STORE UNION
     USE A SET TO STORE INTERSECTION
     */
-    
+    std::unordered_map<std::string, int> word_freq1 = word_counter(file1); // put words as keys in ordered map from file 1
+    std::unordered_map<std::string, int> word_freq2 = word_counter(file2); // put words as keys in ordered map from file 2
+    std::set<std::string> union_set;
+    std::unordered_map<std::string, int> intersection_map;
+
+   for(auto p : word_freq1) // for every pair in word_freq1
+   {
+        if(word_freq2.find(p.first)!=word_freq2.end()) // place every word that exists in both files into the intersection map
+        {
+            intersection_map[p.first] = std::min(p.second, word_freq2[p.first]);
+        }
+   }
+
+   for(auto p : intersection_map) // TODO: can possibly remove this by using the intersection maps keys
+   {
+        union_set.insert(p.first);
+   }
+   for(std::string s : union_set)
+   {
+        std::cout << s << " ";
+   }
+
 }
 
 // levenshtein distance implementations
-void levenshtein_distance()
+void levenshtein_distance(std::string file1, std::string file2)
 {
 
 }
