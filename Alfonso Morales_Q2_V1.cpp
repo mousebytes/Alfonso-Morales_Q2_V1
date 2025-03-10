@@ -19,8 +19,8 @@ void cosine_similarity(std::string file1, std::string file2); // A dot B = ||A||
 // levenshtein distance prototypes
 void levenshtein_distance(std::string file1, std::string file2); 
 
-// jaccard similarity prototypes
-void jaccard_similarity(std::string file1, std::string file2);
+// jaccard index prototypes
+void jaccard_index(std::string file1, std::string file2);
 
 // general use prototypes
 std::string normalize_words(std::string word);
@@ -36,7 +36,7 @@ int main(void)
     cosine_similarity("text1.txt", "text2.txt"); 
 
     std::cout << "\n\n***** JACCARD SIMILARITY *****\n";
-    jaccard_similarity("text1.txt", "text2.txt");
+    jaccard_index("text1.txt", "text2.txt");
 
 
 
@@ -140,33 +140,69 @@ void cosine_similarity(std::string file1, std::string file2)
 
 
 // jaccard similarity implementations
-void jaccard_similarity(std::string file1, std::string file2) // JACCARD SIMILARITY = INTERSECTION OF A AND B DIVIDED BY UNION OF A AND B
+void jaccard_index(std::string file1, std::string file2) // JACCARD SIMILARITY = INTERSECTION OF A AND B DIVIDED BY UNION OF A AND B
 {
     /*
-    LOGIC: USE A MAP TO STORE WORDS AND THEIR FREQUENCY IN FILE 1 AND 2
-    USE A SET TO STORE UNION
-    USE A SET TO STORE INTERSECTION
+    TODO: ASK IF THEY WANT DUPES OR NOT FOR THIS ITERATION OF JACCARD INDEX
+    LOGIC: USE A MAP TO STORE WORDS AND THEIR FREQUENCY IN FILE 1 AND 2 --DONE
+    USE A MAP TO STORE UNION --DONE
+    USE A MAP TO STORE INTERSECTION --DONE
+    JACCARD FORMULA: INTERSECTION / UNION
     */
     std::unordered_map<std::string, int> word_freq1 = word_counter(file1); // put words as keys in ordered map from file 1
     std::unordered_map<std::string, int> word_freq2 = word_counter(file2); // put words as keys in ordered map from file 2
-    std::set<std::string> union_set;
+    std::unordered_map<std::string, int> union_map;
     std::unordered_map<std::string, int> intersection_map;
+    float similarity_score = 0.0, numerator = 0.0, denominator = 0.0;
 
    for(auto p : word_freq1) // for every pair in word_freq1
    {
         if(word_freq2.find(p.first)!=word_freq2.end()) // place every word that exists in both files into the intersection map
         {
-            intersection_map[p.first] = std::min(p.second, word_freq2[p.first]);
+            intersection_map[p.first] = std::min(p.second, word_freq2[p.first]); // insert every word that exists in both word_freq1&2 as a key / whichever value is lower will be placed as the intersection map val
+            // note that this only emplaces words that exist in both files
+            union_map[p.first] = std::max(p.second, word_freq2[p.first]); // insert every word that exists in both word_freq1&2 as a key / whichever value is higher will be placed as the union map val
         }
+        
+   }
+   for(auto p: word_freq1)
+    {
+        if(union_map.find(p.first)==union_map.end()) // if the word doesn't exist in the union map but exists in file 1 then emplace its val in the word key
+            union_map[p.first] = p.second;
+    }
+
+   for(auto p: word_freq2)
+    {
+        if(union_map.find(p.first)==union_map.end())
+            union_map[p.first] = p.second; // if the word doesn't exist in the union map but exists in file 2 then emplace its val in the word key
+    }
+
+    //TODO: Get rid of this debugging
+    std::cout <<"\nUnion Map: \n";
+    for(auto p: union_map)
+        std::cout << " " << p.first << " : " << p.second << "\n";
+
+    std::cout <<"\nIntersection Map: \n";
+    for(auto p: intersection_map)
+        std::cout << " " << p.first << " : " << p.second << "\n";
+   
+   for(auto p : intersection_map)
+   {
+        numerator += p.second; // increment numerator with vals from intersection map
    }
 
-   for(auto p : intersection_map) // TODO: can possibly remove this by using the intersection maps keys
+   for(auto p: union_map)
    {
-        union_set.insert(p.first);
+        denominator += p.second; // increment denom for every unique word in union set
    }
-   for(std::string s : union_set)
+
+   if(denominator!=0.0)
    {
-        std::cout << s << " ";
+        std::cout << "\nJaccard Index: " << (numerator/denominator) * 100<< "%";
+   }
+   else
+   {
+        std::cout << "\nJaccard Index: 0%";
    }
 
 }
