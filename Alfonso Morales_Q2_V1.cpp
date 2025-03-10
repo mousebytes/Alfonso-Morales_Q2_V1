@@ -1,5 +1,5 @@
 // THIS FILE COMPARES 2 .txt FILES FOR THEIR SIMILARITIES USING SEVERAL COMPARISON ALGORITHMS
-
+// THE 
 
 #include<iostream> // i love io stream
 #include<fstream> // for opening files
@@ -38,7 +38,8 @@ int main(void)
     std::cout << "\n\n***** JACCARD SIMILARITY *****\n";
     jaccard_index("text1.txt", "text2.txt");
 
-
+    std::cout << "\n\n***** LEVENSHTEIN DISTANCE *****\n";
+    levenshtein_distance("text1.txt", "text2.txt");
 
 
 
@@ -96,25 +97,7 @@ void cosine_similarity(std::string file1, std::string file2)
         
     std::cout <<"Cosine Similarity: " << similarity << " or " << similarity * 100 <<"%"<<"\n";
 
-    //TODO: check for words unique to file 1 and file 2 -- DID THAT ABOVE ^^^ WITH UNIQUE WORDS
-
-    //TODO find out why the p.first is outputting nothing -- FIXED
-    
-   /* for(auto p : word_freq1) // for every pair in word_freq1 LEGACY CODE (DIDN'T WORK WITH THIS APPROACH)
-    {
-        std::cout<< p.second<< "\n";
-        // if the word is not in file 2
-        if(word_freq2.count(p.first)==0) // if the word is not in file 2
-        {
-            //std::cout << "\t" << p.first << "\n"; // print the word (never use endl, it's slowwwwwww)
-        }
-        
-    }
-    */
-
-    std::cout<< "Differences between the two files: \n";
-
-    std::cout << "\nWords that don't exist in file1, but do in file2: \t";
+    std::cout << "\nWords that exist in file1, but not in file 2: \t";
     for(std::string s : unique_words) // FOR EVERY STRING IN UNIQUE WORDS
     {
         if(word_freq1[s]==0) // IF THE KEY DOESN'T EXIST IN WORD FRQ 1, PRINT
@@ -123,7 +106,7 @@ void cosine_similarity(std::string file1, std::string file2)
         }
     }
 
-    std::cout << "\nWords that don't exist in file2, but do in file1: \t";
+    std::cout << "\nWords that exist in file2, but not in file 1: \t";
     for(std::string s : unique_words)
     {
         
@@ -153,7 +136,18 @@ void jaccard_index(std::string file1, std::string file2) // JACCARD SIMILARITY =
     std::unordered_map<std::string, int> word_freq2 = word_counter(file2); // put words as keys in ordered map from file 2
     std::unordered_map<std::string, int> union_map;
     std::unordered_map<std::string, int> intersection_map;
+    std::set<std::string> unique_words;
     float similarity_score = 0.0, numerator = 0.0, denominator = 0.0;
+
+    for(auto p : word_freq1) // for every pair in word_freq1
+    {
+        unique_words.insert(p.first); // insert the key into the set
+    }
+    for(auto p : word_freq2) // for every pair in word_freq2
+    {
+        unique_words.insert(p.first); // insert the key into the set
+    }
+
 
    for(auto p : word_freq1) // for every pair in word_freq1
    {
@@ -176,15 +170,6 @@ void jaccard_index(std::string file1, std::string file2) // JACCARD SIMILARITY =
         if(union_map.find(p.first)==union_map.end())
             union_map[p.first] = p.second; // if the word doesn't exist in the union map but exists in file 2 then emplace its val in the word key
     }
-
-    //TODO: Get rid of this debugging
-    std::cout <<"\nUnion Map: \n";
-    for(auto p: union_map)
-        std::cout << " " << p.first << " : " << p.second << "\n";
-
-    std::cout <<"\nIntersection Map: \n";
-    for(auto p: intersection_map)
-        std::cout << " " << p.first << " : " << p.second << "\n";
    
    for(auto p : intersection_map)
    {
@@ -204,6 +189,22 @@ void jaccard_index(std::string file1, std::string file2) // JACCARD SIMILARITY =
    {
         std::cout << "\nJaccard Index: 0%";
    }
+
+   std::cout << "\n\nWords that exist in file1, but not in file 2: \t";
+   for(std::string s : unique_words)
+   {
+    if(word_freq1[s]==0)
+        std::cout << s << ", ";
+   }
+
+   std::cout << "\nWords that exist in file2, but not in file 1: \t";
+   for(std::string s : unique_words)
+   {
+    if(word_freq2[s]==0)
+        std::cout << s << ", ";
+   }
+
+   
 
 }
 
