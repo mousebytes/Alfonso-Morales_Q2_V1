@@ -1,5 +1,5 @@
 // THIS FILE COMPARES 2 .txt FILES FOR THEIR SIMILARITIES USING SEVERAL COMPARISON ALGORITHMS
-// THE 
+
 
 #include<iostream> // i love io stream
 #include<fstream> // for opening files
@@ -48,74 +48,65 @@ int main(void)
     return 0;
 }
 
-
-
-
-
-
-
-
-// cosine similarity implementations
-void cosine_similarity(std::string file1, std::string file2)
+void cosine_similarity(std::string file1, std::string file2) // (A * B) / (|A| X |B|)
 {
-    std::unordered_map<std::string, int> word_freq1 = word_counter(file1); // put words as keys in ordered map from file 1
-    std::unordered_map<std::string, int> word_freq2 = word_counter(file2); // put words as keys in ordered map from file 2
+    /*
+        LOGIC:
+        USE MAPS TO STORE WORDS AND THEIR FREQUENCY
+        FIND DOT PRODUCT BY MULTIPLYING KEY VALUES TO THE OTHER MAPS KEY VALUE
+        FIND MAGNITUDE -> SQRT(SUM OF VALS OF ALL KEYS)
+    */
+    std::unordered_map<std::string, int> word_freq1 = word_counter(file1); // populate word freq 1 using word counter function
+    std::unordered_map<std::string, int> word_freq2 = word_counter(file2); // populate word freq 2 using word counter function
+    std::set<std::string> unique_words; // set to store unique words since sets don't hold multiple vals (they arent a multiset like a map)
 
-    // use a set to delete dupe words and get the unique words
-    std::set<std::string> unique_words;
+    for(std::pair<std::string, int> p : word_freq1) // insert keys from word_freq1 into unique words
+        unique_words.insert(p.first);
+    for(std::pair<std::string, int> p : word_freq2) // insert keys from word_freq2 into unique words
+        unique_words.insert(p.first);
 
+    int dot_product = 0;
 
-    // why was i looking for unique words again -- for the for loop below :)
-    for(auto p : word_freq1) // for every pair in word_freq1
+    for(auto p : word_freq1) 
     {
-        unique_words.insert(p.first); // insert the key into the set
-    }
-    for(auto p : word_freq2) // for every pair in word_freq2
-    {
-        unique_words.insert(p.first); // insert the key into the set
-    }
-
-    double dot_prod = 0.0, mag1=0.0,mag2=0.0;
-
-    for(std::string word: unique_words) // for every word in the set
-    {
-        int count1 = word_freq1[word]; // 0 if word doesnt exist in file1
-        int count2 = word_freq2[word];  // 0 if word doesnt exist in file2
-
-        // calculate the dot procuct
-        dot_prod += count1*count2;
-        mag1+= count1*count1; // mag of file 1
-        mag2+= count2*count2; // mag of file 2
-    }
-    double similarity;
-    if(mag1!=0.0 && mag2 !=0.0)
-    {
-        similarity = dot_prod/(std::sqrt(mag1)*std::sqrt(mag2)); // A DOT B DIVIDED BY (SQRT MAGNITUDE 1 TIMES SQRT MAGNITUDE 2)
-    }
-    else
-        similarity = 0;
-        
-    std::cout <<"Cosine Similarity: " << similarity << " or " << similarity * 100 <<"%"<<"\n";
-
-    std::cout << "\nWords that exist in file1, but not in file 2: \t";
-    for(std::string s : unique_words) // FOR EVERY STRING IN UNIQUE WORDS
-    {
-        if(word_freq1[s]==0) // IF THE KEY DOESN'T EXIST IN WORD FRQ 1, PRINT
-        {
-            std::cout << s << ", ";
-        }
+        if(word_freq2.find(p.first)!=word_freq2.end()) // considers the words that exist in both maps
+            dot_product+= p.second * word_freq2[p.first]; // adding to the dot product (the vals of the keys that exist in both maps) (Only need the keys that exist in both since dot prods would be 0 if they didn't exist in one or another)
     }
 
-    std::cout << "\nWords that exist in file2, but not in file 1: \t";
+    float magnitudeA_pre_sqrt = 0.0, magnitudeB_pre_sqrt = 0.0; // gonna store magnitudes before applying square root, so not true magnitudes
+
+    for(std::string s : unique_words) // put all vals from unique keys into their respective magnitude variables
+    {
+        if(word_freq1.find(s) != word_freq1.end()) // if s exists in w_f1
+            magnitudeA_pre_sqrt += word_freq1[s] * word_freq1[s];
+        if(word_freq2.find(s) != word_freq2.end()) // if s exists in w_f2
+            magnitudeB_pre_sqrt += word_freq2[s] * word_freq2[s];
+    }
+
+    if(magnitudeA_pre_sqrt ==0 || magnitudeB_pre_sqrt==0)
+    {
+        std::cout << "\nCosine Similarity Score: 0%";
+        return;
+    }
+
+    float similarity_score = (dot_product)/(sqrt(magnitudeA_pre_sqrt) * sqrt(magnitudeB_pre_sqrt));
+
+    std::cout << "\nCosine Similarity Score: " << similarity_score * 100 << "%";
+
+    std::cout << "\n\nWords that exist in file1, but not in file 2: \t";
     for(std::string s : unique_words)
     {
-        
-    if(word_freq2[s]==0) // IF THE KEY DOESN'T EXIST IN WORD FREQ 2, PRINT
-        {
-            std::cout << s << ", ";
-        }
+     if(word_freq2.find(s)==word_freq2.end())
+         std::cout << s << ", ";
     }
 
+   std::cout << "\nWords that exist in file2, but not in file 1: \t";
+   
+   for(std::string s : unique_words)
+   {
+    if(word_freq1.find(s)==word_freq1.end())
+        std::cout << s << ", ";
+   }
 }
 
 
@@ -126,11 +117,11 @@ void cosine_similarity(std::string file1, std::string file2)
 void jaccard_index(std::string file1, std::string file2) // JACCARD SIMILARITY = INTERSECTION OF A AND B DIVIDED BY UNION OF A AND B
 {
     /*
-    TODO: ASK IF THEY WANT DUPES OR NOT FOR THIS ITERATION OF JACCARD INDEX
+    TODO: ASK IF THEY WANT DUPES OR NOT FOR THIS ITERATION OF JACCARD INDEX -- DONE USE MULTISETS
     LOGIC: USE A MAP TO STORE WORDS AND THEIR FREQUENCY IN FILE 1 AND 2 --DONE
     USE A MAP TO STORE UNION --DONE
     USE A MAP TO STORE INTERSECTION --DONE
-    JACCARD FORMULA: INTERSECTION / UNION
+    JACCARD FORMULA: INTERSECTION / UNION --DONE
     */
     std::unordered_map<std::string, int> word_freq1 = word_counter(file1); // put words as keys in ordered map from file 1
     std::unordered_map<std::string, int> word_freq2 = word_counter(file2); // put words as keys in ordered map from file 2
@@ -191,18 +182,20 @@ void jaccard_index(std::string file1, std::string file2) // JACCARD SIMILARITY =
    }
 
    std::cout << "\n\nWords that exist in file1, but not in file 2: \t";
-   for(std::string s : unique_words)
-   {
-    if(word_freq1[s]==0)
-        std::cout << s << ", ";
-   }
+    for(std::string s : unique_words)
+    {
+     if(word_freq2.find(s)==word_freq2.end())
+         std::cout << s << ", ";
+    }
 
    std::cout << "\nWords that exist in file2, but not in file 1: \t";
+   
    for(std::string s : unique_words)
    {
-    if(word_freq2[s]==0)
+    if(word_freq1.find(s)==word_freq1.end())
         std::cout << s << ", ";
    }
+   
 
    
 
