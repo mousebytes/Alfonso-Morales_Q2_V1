@@ -42,9 +42,6 @@ int main(void)
     std::cout << "\n\n***** LEVENSHTEIN DISTANCE *****\n";
     levenshtein_distance("text1.txt", "text2.txt");
 
-    std::cout << "\n\n**** DEBUGGING *****\n";
-    return_vecs_words_from_files("text1.txt", "text2.txt");
-
 
     return 0;
 }
