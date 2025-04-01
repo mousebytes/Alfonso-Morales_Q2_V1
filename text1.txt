@@ -1,1 +1,1 @@
-I am a node
+I am a node and I'm longer than text 2

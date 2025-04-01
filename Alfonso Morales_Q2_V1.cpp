@@ -207,15 +207,42 @@ void levenshtein_distance(std::string file1, std::string file2)
 {
     // holds the wrods from both fioes
     std::pair<std::vector<std::string>,std::vector<std::string>> word_list = return_vecs_words_from_files(file1,file2);
-
-    // from what i understand -- n dimension matrix, but i only need 2 dim so populate 2 vecs for word comp
-    std::vector<std::vector<int>> word_comparison_matrix;
+    int total_levenshtein_distance = 0;
 
     
+    int length_pair_1 = word_list.first.size();
+    int length_pair_2 = word_list.second.size();
 
+    if(length_pair_1 >= length_pair_2) // handle cases where lengths are dissimilar through conditionals
+    {
+        for(int i = 0; i < length_pair_2;++i)
+        {
+            if(word_list.first[i] != word_list.second[i]) // check if the words aren't the same -- if they arent then increase levenshtein by 1
+                total_levenshtein_distance++;
+        }
 
+        // this will populate the rest of the levenshtein distances with just hte length of the leftover words
+        for(int i = length_pair_2; i < length_pair_1;++i)
+        {
+            total_levenshtein_distance ++;
+        }
+    }
+    else
+    {
+        for(int i = 0; i < length_pair_1;++i)
+        {
+            if(word_list.first[i] != word_list.second[i]) // check if the words aren't the same -- if they arent then increase levenshtein by 1
+                total_levenshtein_distance++;
+        }
 
+        // this will populate the rest of the levenshtein distances with just hte length of the leftover words
+        for(int i = length_pair_1; i < length_pair_2;++i)
+        {
+            total_levenshtein_distance ++;
+        }
+    }
 
+    std::cout << "\nLevenshtein Distance: " << total_levenshtein_distance;
 
 }
 
