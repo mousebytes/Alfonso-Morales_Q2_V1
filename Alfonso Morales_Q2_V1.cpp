@@ -8,6 +8,7 @@
 #include<string> // woooorrrddddssss
 #include<set> // for deleting dupe words
 #include<cctype> // for isalnum
+#include<vector>
 // not using namespace std just for practice
 
 
@@ -25,7 +26,7 @@ void jaccard_index(std::string file1, std::string file2);
 // general use prototypes
 std::string normalize_words(std::string word);
 std::unordered_map<std::string, int> word_counter(std::string file_name);
-
+std::pair<std::vector<std::string>,std::vector<std::string>> return_vecs_words_from_files(std::string file1, std::string file2);
 
 
 
@@ -41,8 +42,8 @@ int main(void)
     std::cout << "\n\n***** LEVENSHTEIN DISTANCE *****\n";
     levenshtein_distance("text1.txt", "text2.txt");
 
-
-
+    std::cout << "\n\n**** DEBUGGING *****\n";
+    return_vecs_words_from_files("text1.txt", "text2.txt");
 
 
     return 0;
@@ -204,6 +205,17 @@ void jaccard_index(std::string file1, std::string file2) // JACCARD SIMILARITY =
 // levenshtein distance implementations
 void levenshtein_distance(std::string file1, std::string file2)
 {
+    // holds the wrods from both fioes
+    std::pair<std::vector<std::string>,std::vector<std::string>> word_list = return_vecs_words_from_files(file1,file2);
+
+    // from what i understand -- n dimension matrix, but i only need 2 dim so populate 2 vecs for word comp
+    std::vector<std::vector<int>> word_comparison_matrix;
+
+    
+
+
+
+
 
 }
 
@@ -241,5 +253,45 @@ std::unordered_map<std::string, int> word_counter(std::string file_name)
 
     file.close(); // close input file
     return word_freq; // return the map
+
+}
+
+// push words from docs into a pair of vectors for levenshtein
+std::pair<std::vector<std::string>,std::vector<std::string>> return_vecs_words_from_files(std::string file1, std::string file2) // this function is done
+{
+    std::pair<std::vector<std::string>,std::vector<std::string>> words_from_files;
+    std::ifstream file_1(file1), file_2(file2);
+    std::string word;
+
+    if(!file_1 && !file_2) // if both files aren't opened then send back an empty pair
+    {
+        std::cerr<<"file1&2 not opened\n"; // return an error
+        return words_from_files;
+    }
+
+
+    if(file_1) // if file 1 is opened then write all words from file 1 into pair.first
+    {
+        while(file_1>>word)
+        {
+            std::string normalized_word = normalize_words(word);
+            words_from_files.first.push_back(normalized_word);
+        }
+    }
+    
+
+    if(file_2) // if file 2 is opened then write all words from file 2 into pair.second
+    {
+        while(file_2>>word)
+        {
+            std::string normalized_word = normalize_words(word);
+            words_from_files.second.push_back(normalized_word);
+        }
+    }
+
+    file_1.close();
+    file_2.close();
+
+    return words_from_files;
 
 }

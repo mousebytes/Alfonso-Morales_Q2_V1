@@ -28,6 +28,25 @@ Levenshtein Score = number of operations to change one string to another
 
 Calculate the similarity score: (1-(LevenshteinScore/MaxLength))*100
 
+I'm going to do a char by char comparing each word to a word in the adjacent file
+
+        ""  m   o   n   k
+    ""  0   1   2   3   4
+    d   1   1   2   3   4
+    u   2   2   2   3   4
+    n   3   3   3   2   3
+    k   4   4   4   3   2 <-- Levenshtein Score
+      
+scratch that ^^ I'm just gonna do word by word
+
+        ""  i   am  a   text
+    ""  0   1   2   3   4
+    i   1   0   1   2   3
+    am  2   1   0   1   2
+    a   3   2   1   0   1
+    file4   3   2   1   1         
+    
+
 
 
 
